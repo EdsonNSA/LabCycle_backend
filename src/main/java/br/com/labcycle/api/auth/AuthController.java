@@ -1,5 +1,6 @@
 package br.com.labcycle.api.auth;
 
+import br.com.labcycle.api.config.TokenService;
 import br.com.labcycle.api.user.User;
 import br.com.labcycle.api.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
