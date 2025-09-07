@@ -1,3 +1,7 @@
 package br.com.labcycle.api.agendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
-public interface AgendamentoRepository extends JpaRepository<Agendamento, String> {}
+import java.util.List;
+
+public interface AgendamentoRepository extends JpaRepository<Agendamento, String> {
+    List<Agendamento> findByTurmaId(String turmaId);
+}

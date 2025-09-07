@@ -1,10 +1,12 @@
 package br.com.labcycle.api.turma;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Objects;
 
 @Table(name = "turmas")
 @Entity(name = "Turma")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Turma {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)

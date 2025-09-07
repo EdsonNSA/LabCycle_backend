@@ -26,29 +26,37 @@ public class SecurityConfigurations {
     @Autowired
     private SecurityFilter securityFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/reagentes").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/turmas").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/agendamentos").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/agendamentos").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/agendamentos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/agendamentos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/reagentes").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/reagentes/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/reagentes/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
+                    
+                    .requestMatchers(HttpMethod.GET, "/reagentes").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/turmas").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/agendamentos").authenticated()
+
+                    .requestMatchers(HttpMethod.POST, "/turmas").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/turmas/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/turmas/**").hasRole("ADMIN")
+                    
+                    .requestMatchers(HttpMethod.POST, "/agendamentos").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/agendamentos/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/agendamentos/**").hasRole("ADMIN")
+
+                    .requestMatchers(HttpMethod.POST, "/reagentes").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/reagentes/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/reagentes/**").hasRole("ADMIN")
+                    
+                    .anyRequest().authenticated()
+            )
+            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+}
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
