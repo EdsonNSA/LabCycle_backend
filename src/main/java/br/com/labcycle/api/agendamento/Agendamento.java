@@ -1,12 +1,15 @@
 package br.com.labcycle.api.agendamento;
 
+import br.com.labcycle.api.pratica.Pratica;
 import br.com.labcycle.api.turma.Turma;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Table(name = "agendamentos")
 @Entity(name = "Agendamento")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Agendamento {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)
@@ -16,21 +19,29 @@ public class Agendamento {
     @JoinColumn(name = "turma_id")
     private Turma turma;
 
-    private String nomePratica;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pratica_id")
+    private Pratica pratica;
+
     private LocalDateTime dataHora;
 
-    // Construtores
     public Agendamento() {}
 
-    // Getters e Setters
+    // Getters e Setters 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public Turma getTurma() { return turma; }
     public void setTurma(Turma turma) { this.turma = turma; }
-    public String getNomePratica() { return nomePratica; }
-    public void setNomePratica(String nomePratica) { this.nomePratica = nomePratica; }
     public LocalDateTime getDataHora() { return dataHora; }
     public void setDataHora(LocalDateTime dataHora) { this.dataHora = dataHora; }
+
+    public Pratica getPratica() {
+        return pratica;
+    }
+
+    public void setPratica(Pratica pratica) {
+        this.pratica = pratica;
+    }
 
     @Override
     public boolean equals(Object o) {

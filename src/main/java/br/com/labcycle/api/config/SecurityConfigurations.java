@@ -33,12 +33,25 @@ public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
+
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
                     
+
                     .requestMatchers(HttpMethod.GET, "/reagentes").authenticated()
                     .requestMatchers(HttpMethod.GET, "/turmas").authenticated()
                     .requestMatchers(HttpMethod.GET, "/agendamentos").authenticated()
+
+
+                    .requestMatchers(HttpMethod.GET, "/praticas/**").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/praticas").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/praticas/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/praticas/**").hasRole("ADMIN")
+
+
+                    .requestMatchers(HttpMethod.GET, "/praticas/*/comentarios").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/praticas/*/comentarios").authenticated()
+                    
 
                     .requestMatchers(HttpMethod.POST, "/turmas").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/turmas/**").hasRole("ADMIN")

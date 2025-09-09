@@ -1,5 +1,7 @@
 package br.com.labcycle.api.agendamento;
 
+import br.com.labcycle.api.pratica.Pratica;
+import br.com.labcycle.api.pratica.PraticaRepository;
 import br.com.labcycle.api.turma.Turma;
 import br.com.labcycle.api.turma.TurmaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +25,21 @@ public class AgendamentoController {
     @Autowired
     private TurmaRepository turmaRepositorio;
 
+    @Autowired
+    private PraticaRepository praticaRepositorio;
+
     @PostMapping
     @Transactional
     public ResponseEntity<DadosListagemAgendamentoDTO> criarAgendamento(@RequestBody DadosAgendamentoDTO dados, UriComponentsBuilder uriBuilder) {
         Turma turma = turmaRepositorio.findById(dados.turmaId())
                 .orElseThrow(() -> new RuntimeException("Turma com id " + dados.turmaId() + " não encontrada."));
 
+        Pratica pratica = praticaRepositorio.findById(dados.praticaId())
+                .orElseThrow(() -> new RuntimeException("Prática com id " + dados.praticaId() + " não encontrada."));
+
         Agendamento novoAgendamento = new Agendamento();
         novoAgendamento.setTurma(turma);
-        novoAgendamento.setNomePratica(dados.nomePratica());
+        novoAgendamento.setPratica(pratica);
         novoAgendamento.setDataHora(dados.dataHora());
 
         agendamentoRepositorio.save(novoAgendamento);
@@ -48,13 +56,13 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentos);
     }
     
-    @GetMapping("/por-turma/{turmaId}")
-    public ResponseEntity<List<DadosListagemAgendamentoDTO>> buscarAgendamentosPorTurma(@PathVariable String turmaId) {
-        List<DadosListagemAgendamentoDTO> agendamentos = agendamentoRepositorio.findByTurmaId(turmaId).stream()
-                .map(DadosListagemAgendamentoDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(agendamentos);
-    }
+@GetMapping("/por-turma/{turmaId}")
+public ResponseEntity<List<DadosListagemAgendamentoDTO>> buscarAgendamentosPorTurma(@PathVariable String turmaId) {
+    List<DadosListagemAgendamentoDTO> agendamentos = agendamentoRepositorio.findByTurmaIdWithDetails(turmaId).stream()
+            .map(DadosListagemAgendamentoDTO::new)
+            .collect(Collectors.toList());
+    return ResponseEntity.ok(agendamentos);
+}
 
     @PutMapping("/{id}")
     @Transactional
@@ -64,9 +72,12 @@ public class AgendamentoController {
 
         Turma turma = turmaRepositorio.findById(dados.turmaId())
                 .orElseThrow(() -> new RuntimeException("Turma com id " + dados.turmaId() + " não encontrada."));
+        
+        Pratica pratica = praticaRepositorio.findById(dados.praticaId())
+                .orElseThrow(() -> new RuntimeException("Prática com id " + dados.praticaId() + " não encontrada."));
 
         agendamento.setTurma(turma);
-        agendamento.setNomePratica(dados.nomePratica());
+        agendamento.setPratica(pratica);
         agendamento.setDataHora(dados.dataHora());
 
         return ResponseEntity.ok(new DadosListagemAgendamentoDTO(agendamento));
