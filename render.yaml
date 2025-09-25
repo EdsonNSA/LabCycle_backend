@@ -1,7 +1,8 @@
 services:
   - type: web
     name: labcycle-api
-    # A linha 'env: java' foi removida para permitir a autodetecção.
+    env: java      # Re-adicionado, pois é o valor oficial da documentação.
+    plan: free     # Adicionado para ser explícito sobre o plano gratuito.
     
     buildCommand: "./mvnw clean package -DskipTests"
     startCommand: "java -jar target/*.jar"
@@ -9,7 +10,6 @@ services:
     healthCheckPath: /actuator/health
 
     envVars:
-      # Adicionado "sync: false" para indicar que os valores são gerenciados no painel.
       - key: DB_HOST
         sync: false
       - key: DB_PORT
