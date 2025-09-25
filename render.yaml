@@ -1,0 +1,21 @@
+services:
+
+  - type: web
+    name: labcycle-api
+    env: java 
+
+
+    buildCommand: "./mvnw clean package -DskipTests"
+    startCommand: "java -jar target/*.jar"
+
+
+    healthCheckPath: /actuator/health
+
+
+    envVars:
+      - key: DB_HOST
+      - key: DB_PORT
+      - key: DB_NAME
+      - key: DB_USER
+      - key: DB_PASSWORD
+      - key: JWT_SECRET
