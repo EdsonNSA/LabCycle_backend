@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -26,50 +27,45 @@ public class SecurityConfigurations {
     @Autowired
     private SecurityFilter securityFilter;
 
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    return httpSecurity
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authorize -> authorize
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
 
-                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
-                    
+                        .requestMatchers(HttpMethod.GET, "/reagentes").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/turmas").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/agendamentos").authenticated()
 
-                    .requestMatchers(HttpMethod.GET, "/reagentes").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/turmas").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/agendamentos").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/praticas/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/praticas").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/praticas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/praticas/**").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "/praticas/*/comentarios").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/praticas/*/comentarios").authenticated()
 
-                    .requestMatchers(HttpMethod.GET, "/praticas/**").authenticated()
-                    .requestMatchers(HttpMethod.POST, "/praticas").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/praticas/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/praticas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/turmas").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/turmas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/turmas/**").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.POST, "/agendamentos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/agendamentos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/agendamentos/**").hasRole("ADMIN")
 
-                    .requestMatchers(HttpMethod.GET, "/praticas/*/comentarios").authenticated()
-                    .requestMatchers(HttpMethod.POST, "/praticas/*/comentarios").authenticated()
-                    
+                        .requestMatchers(HttpMethod.POST, "/reagentes").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/reagentes/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/reagentes/**").hasRole("ADMIN")
 
-                    .requestMatchers(HttpMethod.POST, "/turmas").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/turmas/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/turmas/**").hasRole("ADMIN")
-                    
-                    .requestMatchers(HttpMethod.POST, "/agendamentos").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/agendamentos/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/agendamentos/**").hasRole("ADMIN")
-
-                    .requestMatchers(HttpMethod.POST, "/reagentes").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/reagentes/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/reagentes/**").hasRole("ADMIN")
-                    
-                    .anyRequest().authenticated()
-            )
-            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
-}
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -84,13 +80,19 @@ public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "http://localhost:3000",
+                "https://*.ngrok-free.dev",
+                "https://labcycle.netlify.app/"
+        ));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
-
