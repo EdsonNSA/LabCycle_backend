@@ -1,7 +1,7 @@
 package br.com.labcycle.api.agendamento;
 
 import br.com.labcycle.api.pratica.DadosPraticaResumoDTO;
-import br.com.labcycle.api.pratica.Pratica;
+
 
 import java.time.LocalDateTime;
 
