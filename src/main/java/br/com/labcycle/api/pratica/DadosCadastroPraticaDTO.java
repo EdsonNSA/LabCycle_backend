@@ -12,5 +12,5 @@ public record DadosCadastroPraticaDTO(
         String segurancaJson,
         String materiaisJson,
         String reagentesJson,
-        String descarte
+        String descarteJson
 ) {}

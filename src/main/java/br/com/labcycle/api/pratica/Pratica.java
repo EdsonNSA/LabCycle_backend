@@ -32,7 +32,8 @@ public class Pratica {
     @Lob
     private String reagentesJson;
 
-    private String descarte;
+    @Lob
+    private String descarteJson;
 
     public Pratica() {}
 
@@ -47,7 +48,7 @@ public class Pratica {
         this.segurancaJson = dados.segurancaJson();
         this.materiaisJson = dados.materiaisJson();
         this.reagentesJson = dados.reagentesJson();
-        this.descarte = dados.descarte();
+        this.descarteJson = dados.descarteJson(); 
     }
 
     public void atualizarDados(DadosCadastroPraticaDTO dados) {
@@ -61,104 +62,39 @@ public class Pratica {
         if (dados.segurancaJson() != null) this.segurancaJson = dados.segurancaJson();
         if (dados.materiaisJson() != null) this.materiaisJson = dados.materiaisJson();
         if (dados.reagentesJson() != null) this.reagentesJson = dados.reagentesJson();
-        if (dados.descarte() != null) this.descarte = dados.descarte();
+        if (dados.descarteJson() != null) this.descarteJson = dados.descarteJson();
     }
 
-    //Getters e Setters
 
-    public String getId() {
-        return id;
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getDisciplina() { return disciplina; }
+    public void setDisciplina(String disciplina) { this.disciplina = disciplina; }
+    public String getDuracao() { return duracao; }
+    public void setDuracao(String duracao) { this.duracao = duracao; }
+    public String getDificuldade() { return dificuldade; }
+    public void setDificuldade(String dificuldade) { this.dificuldade = dificuldade; }
+    public String getVideoUrl() { return videoUrl; }
+    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+    public String getObjetivosJson() { return objetivosJson; }
+    public void setObjetivosJson(String objetivosJson) { this.objetivosJson = objetivosJson; }
+    public String getProcedimentoJson() { return procedimentoJson; }
+    public void setProcedimentoJson(String procedimentoJson) { this.procedimentoJson = procedimentoJson; }
+    public String getSegurancaJson() { return segurancaJson; }
+    public void setSegurancaJson(String segurancaJson) { this.segurancaJson = segurancaJson; }
+    public String getMateriaisJson() { return materiaisJson; }
+    public void setMateriaisJson(String materiaisJson) { this.materiaisJson = materiaisJson; }
+    public String getReagentesJson() { return reagentesJson; }
+    public void setReagentesJson(String reagentesJson) { this.reagentesJson = reagentesJson; }
+    
+
+    public String getDescarteJson() {
+        return descarteJson;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDisciplina() {
-        return disciplina;
-    }
-
-    public void setDisciplina(String disciplina) {
-        this.disciplina = disciplina;
-    }
-
-    public String getDuracao() {
-        return duracao;
-    }
-
-    public void setDuracao(String duracao) {
-        this.duracao = duracao;
-    }
-
-    public String getDificuldade() {
-        return dificuldade;
-    }
-
-    public void setDificuldade(String dificuldade) {
-        this.dificuldade = dificuldade;
-    }
-
-    public String getVideoUrl() {
-        return videoUrl;
-    }
-
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
-
-    public String getObjetivosJson() {
-        return objetivosJson;
-    }
-
-    public void setObjetivosJson(String objetivosJson) {
-        this.objetivosJson = objetivosJson;
-    }
-
-    public String getProcedimentoJson() {
-        return procedimentoJson;
-    }
-
-    public void setProcedimentoJson(String procedimentoJson) {
-        this.procedimentoJson = procedimentoJson;
-    }
-
-    public String getSegurancaJson() {
-        return segurancaJson;
-    }
-
-    public void setSegurancaJson(String segurancaJson) {
-        this.segurancaJson = segurancaJson;
-    }
-
-    public String getMateriaisJson() {
-        return materiaisJson;
-    }
-
-    public void setMateriaisJson(String materiaisJson) {
-        this.materiaisJson = materiaisJson;
-    }
-
-    public String getReagentesJson() {
-        return reagentesJson;
-    }
-
-    public void setReagentesJson(String reagentesJson) {
-        this.reagentesJson = reagentesJson;
-    }
-
-    public String getDescarte() {
-        return descarte;
-    }
-
-    public void setDescarte(String descarte) {
-        this.descarte = descarte;
+    public void setDescarteJson(String descarteJson) {
+        this.descarteJson = descarteJson;
     }
 }
