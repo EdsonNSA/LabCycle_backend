@@ -3,6 +3,7 @@ package br.com.labcycle.api.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,8 +33,38 @@ public class SecurityConfigurations {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        // MODO TESTE: Liberando todas as rotas para validar a conexão Netlify -> ngrok
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
+                        
+                        .requestMatchers(HttpMethod.GET, "/reagentes").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/turmas").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/agendamentos").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/praticas/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/praticas").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/praticas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/praticas/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/praticas/*/comentarios").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/praticas/*/comentarios").authenticated()
+                        
+                        .requestMatchers(HttpMethod.POST, "/turmas").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/turmas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/turmas/**").hasRole("ADMIN")
+                        
+                        .requestMatchers(HttpMethod.POST, "/agendamentos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/agendamentos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/agendamentos/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/reagentes").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/reagentes/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/reagentes/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/cyla/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/cyla/perguntar").authenticated()
+                        
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -53,14 +84,21 @@ public class SecurityConfigurations {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // ACESSO GERAL: Aceita qualquer origem (Netlify, localhost, etc)
-        // Usamos OriginPatterns para permitir o allowCredentials(true) com "*"
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        // Adicione todas as variações da sua URL do Netlify aqui
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:3000",
+            "https://labcycle.netlify.app", 
+            "https://unpredicatively-preconcurrent-miguelina.ngrok-free.dev"
+        ));
         
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
-        // Permite todos os headers, incluindo o 'ngrok-skip-browser-warning'
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        // IMPORTANTE: Liberar o header do ngrok para evitar a página de aviso
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization", 
+            "Content-Type", 
+            "ngrok-skip-browser-warning"
+        ));
         
         configuration.setAllowCredentials(true);
         
