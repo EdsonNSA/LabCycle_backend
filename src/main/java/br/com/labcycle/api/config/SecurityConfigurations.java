@@ -84,14 +84,22 @@ public class SecurityConfigurations {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
+        // Adicione todas as variações da sua URL do Netlify aqui
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:3000",
-            "https://labcycle.netlify.app",
-            "https://unpredicatively-preconcurrent-miguelina.ngrok-free.dev" 
+            "https://labcycle.netlify.app", 
+            "https://unpredicatively-preconcurrent-miguelina.ngrok-free.dev"
         ));
         
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        
+        // IMPORTANTE: Liberar o header do ngrok para evitar a página de aviso
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization", 
+            "Content-Type", 
+            "ngrok-skip-browser-warning"
+        ));
+        
         configuration.setAllowCredentials(true);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
