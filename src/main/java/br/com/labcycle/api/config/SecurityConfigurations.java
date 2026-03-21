@@ -60,6 +60,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/reagentes").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/reagentes/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/reagentes/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/cyla/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/cyla/perguntar").authenticated()
                         
                         .anyRequest().authenticated()
                 )
