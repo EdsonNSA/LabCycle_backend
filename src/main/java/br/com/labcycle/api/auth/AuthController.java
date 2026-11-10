@@ -3,6 +3,8 @@ package br.com.labcycle.api.auth;
 import br.com.labcycle.api.config.TokenService;
 import br.com.labcycle.api.user.User;
 import br.com.labcycle.api.user.UserRepository;
+import br.com.labcycle.api.user.UserRole;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +26,7 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO data){
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
@@ -32,11 +34,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterDTO data){
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterDTO data){
         if(this.userRepository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.name(), data.email(), encryptedPassword, data.role());
+        User newUser = new User(data.name(), data.email(), encryptedPassword, UserRole.USER);
 
         this.userRepository.save(newUser);
         return ResponseEntity.ok().build();

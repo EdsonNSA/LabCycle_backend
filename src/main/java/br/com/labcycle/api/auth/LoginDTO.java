@@ -1,3 +1,10 @@
 package br.com.labcycle.api.auth;
-public record LoginDTO(String email, String password) {
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginDTO(
+        @NotBlank @Email String email,
+        @NotBlank String password
+) {
 }
